@@ -1,0 +1,48 @@
+<html>
+<head>
+      <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+      <script>
+
+            var fileData = null;
+
+            function loadFile() {
+                var preview = document.querySelector('file');
+                var file    = document.querySelector('input[type=file]').files[0];
+                var reader  = new FileReader();
+
+                reader.onloadend = function () {
+                    fileData = file;
+                }
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function uploadFile() {
+                data = new FormData();
+                data.append('file', fileData);
+
+                $.ajax({
+                  url: "/dump/",
+                  type: "POST",
+                  data: data,
+                  enctype: 'multipart/form-data',
+                  processData: false,
+                  contentType: false,
+                  success: function(data) {
+                      document.getElementById("result").innerHTML = 'Result: Upload successful';
+                  },
+                  error: function(e) {
+                      document.getElementById("result").innerHTML = 'Result: Error occurred: ' + e.message;
+                  }
+                });
+            }
+
+      </script>
+</head>
+<body>
+<input type="file" onchange="loadFile()"><br>
+<button onclick="uploadFile()">Upload..</button>
+<div id='result'></div>
+</body>
+</html>
