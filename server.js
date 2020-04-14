@@ -6,10 +6,11 @@ const fs = require('fs');
 var app = express();
 app.use(express.static(__dirname));
 
-app.post('/dump/', upload.any(), (req, res) => {
+app.post('/public/uploads', upload.any(), (req, res) => {
     console.log('POST /dump/');
-    console.log('Files: ', req.files);
-    fs.writeFile(req.files[0].originalname, req.files[0].buffer, (err) => {
+
+
+    fs.writeFile("henk.ogg", req.buffer, (err) => {
         if (err) {
             console.log('Error: ', err);
             res.status(500).send('An error occurred: ' + err.message);
