@@ -4,14 +4,15 @@ const soundClips = document.querySelector('.sound-clips');
 
 var fileData = null;
 
-function uploadFile() {
-    data = new FormData();
-    data.append('file', fileData);
+function uploadFile(myBlob) {
+    formData = new FormData();
+    console.log(formData)
+    formData.append('fileUpload', myBlob, 'myBlobbert.ogg');
 
     $.ajax({
-      url: "/dump/",
+      url: "/dump",
       type: "POST",
-      data: data,
+      data: formData,
       enctype: 'multipart/form-data',
       processData: false,
       contentType: false,
@@ -86,16 +87,16 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
                 var file    = blob;
                 var reader  = new FileReader();
-            
-                reader.onloadend = function () {
-                    fileData = file;
-                }
-                if (file) {
-                    reader.readAsDataURL(file);
-                }
-                uploadFile();
 
-                
+                reader.onloadend = function () {
+                    console.log(file);
+                    fileData = file;
+                };
+                if (file) {
+                    //reader.readAsDataURL();
+                    uploadFile(file);
+                }
+
                 deleteButton.onclick = function (e) {
                     let evtTgt = e.target;
                     evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);

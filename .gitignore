@@ -1,0 +1,6 @@
+.idea/
+phpinfo.php
+package-lock.json
+dev.feedbackmodule.nl.pem
+dev.feedbackmodule.nl-key.pem
+public/uploads
