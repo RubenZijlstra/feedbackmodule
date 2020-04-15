@@ -4,26 +4,6 @@ const soundClips = document.querySelector('.sound-clips');
 
 var fileData = null;
 
-function uploadFile(myBlob) {
-    formData = new FormData();
-    console.log(formData)
-    formData.append('fileUpload', myBlob, clipName + '.ogg');
-
-    $.ajax({
-      url: "/dump",
-      type: "POST",
-      data: formData,
-      enctype: 'multipart/form-data',
-      processData: false,
-      contentType: false,
-      success: function(data) {
-          document.getElementById("result").innerHTML = 'Result: Upload successful';
-      },
-      error: function(e) {
-          document.getElementById("result").innerHTML = 'Result: Error occurred: ' + e.message;
-      }
-    });
-}
 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     console.log('getUserMedia supported.');
@@ -85,31 +65,48 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 audio.src = audioURL;
                 console.log(audioURL);
 
-                var file    = blob;
-                var reader  = new FileReader();
+                var file = blob;
+                var reader = new FileReader();
 
                 reader.onloadend = function () {
-                    console.log(file);
                     fileData = file;
-                };
+                }
                 if (file) {
-                    //reader.readAsDataURL();
-                    uploadFile(file);
+                    reader.readAsDataURL(file);
                 }
+                console.log(file);
 
-                deleteButton.onclick = function (e) {
-                    let evtTgt = e.target;
-                    evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
-                }
+                data = new FormData();
+                data.append(file, fileData);
 
+                $.ajax({
+                    url: "/public/uploads",
+                    type: "POST",
+                    data: data,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        document.getElementById("result").innerHTML = 'Result: Upload successful';
+                    },
+                    error: function (e) {
+                        document.getElementById("result").innerHTML = 'Result: Error occurred: ' + e.message;
+                    }
+                });            
+
+
+            deleteButton.onclick = function (e) {
+                let evtTgt = e.target;
+                evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
             }
+        }
         })
 
 
         // Error callback
-        .catch(function (err) {
-            console.log('The following getUserMedia error occured: ' + err);
-        }
+        .catch (function (err) {
+    console.log('The following getUserMedia error occured: ' + err);
+}
         );
 } else {
     console.log('getUserMedia not supported on your browser!');
